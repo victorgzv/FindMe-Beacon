@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">FindMe</string>
+    <string name="bluetooth_state">Bluetooth state</string>
 </resources>
