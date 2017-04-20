@@ -32,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        initBluetooth();
 
          Toolbar mToolbar= (Toolbar)findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
@@ -46,23 +47,27 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId()==R.id.action_bluetooth){
-            initBluetooth();
+            enableBluetooth();
         }
         return super.onOptionsItemSelected(item);
     }
     void initBluetooth() {
-        //        mBtAdapter = BluetoothAdapter.getDefaultAdapter();
         //the following method is recommended to use for getting BluetoothAdapter
         final BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
         mBtAdapter = bluetoothManager.getAdapter();
-
+        mBtAdapter.enable();
         if (mBtAdapter == null || !mBtAdapter.isEnabled()) {
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
 
         }
         mBtScanner = mBtAdapter.getBluetoothLeScanner();
-
-
+    }
+    void enableBluetooth(){
+        if (!mBtAdapter.isEnabled()) {
+            mBtAdapter.enable();
+        }else{
+            mBtAdapter.disable();
+        }
     }
 }
