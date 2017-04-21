@@ -16,8 +16,12 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
+import java.util.ArrayList;
+
 
 public class MainActivity extends AppCompatActivity {
+
+    private static final ArrayList leDeviceAdapter = new ArrayList();
     private RecyclerView mDeviceListRecyclerView;
     private static final long SCAN_PERIOD = 10000;
     private boolean mScanning;
