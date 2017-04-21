@@ -19,5 +19,18 @@
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         />
 
+    <ImageButton
+        android:id="@+id/imageButton"
+        android:layout_width="65dp"
+        android:layout_height="65dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="46dp"
+        android:layout_marginEnd="137dp"
+        android:layout_marginRight="25dp"
+        android:background="@drawable/oval"
+        android:onClick="scan"
+        android:src="@mipmap/scan3" />
+
 
 </RelativeLayout>
