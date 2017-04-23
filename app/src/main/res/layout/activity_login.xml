@@ -7,13 +7,13 @@
     tools:context="com.example.vctor.findme.LoginActivity">
 
     <EditText
-        android:id="@+id/etUserName"
+        android:id="@+id/etLoginUserName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="68dp"
+        android:layout_marginTop="42dp"
         android:ems="10"
         android:hint="User Name"
         android:inputType="textPersonName" />
@@ -22,11 +22,12 @@
         android:id="@+id/etLoginPwd"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/etUserName"
         android:ems="10"
         android:hint="Password"
         android:inputType="textPassword"
+        android:layout_marginTop="46dp"
+        android:layout_alignTop="@+id/etLoginUserName"
+        android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true" />
 
     <Button
@@ -46,4 +47,5 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="16dp"
         android:text="Register here" />
+
 </RelativeLayout>
