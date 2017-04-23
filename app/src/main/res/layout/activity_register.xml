@@ -7,7 +7,7 @@
     tools:context="com.example.vctor.findme.RegisterActivity">
 
     <EditText
-        android:id="@+id/etLoginUser"
+        android:id="@+id/etUserName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
@@ -24,7 +24,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentStart="true"
-        android:layout_below="@+id/etLoginUser"
+        android:layout_below="@+id/etUserName"
         android:ems="10"
         android:hint="Name"
         android:inputType="textPersonName" />
