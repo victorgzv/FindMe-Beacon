@@ -55,7 +55,7 @@ public class LoginActivity extends AppCompatActivity {
                             if(success){
                                 String username= jsonResponse.getString("userName");
                                 String email= jsonResponse.getString("email");
-                                Intent intent= new Intent(LoginActivity.this,FindMe.class);
+                                Intent intent= new Intent(LoginActivity.this,MainActivity.class);
                                 intent.putExtra("userName",username);
                                 intent.putExtra("email",email);
 

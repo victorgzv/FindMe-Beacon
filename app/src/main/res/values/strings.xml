@@ -25,4 +25,6 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello Scan fragment</string>
     <string name="hello_fragment_2">Hello Radar fragment</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="title_activity_caca">caca</string>
 </resources>
