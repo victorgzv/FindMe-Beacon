@@ -11,13 +11,18 @@ import android.widget.TextView;
 
 import org.w3c.dom.Text;
 
+import java.util.ArrayList;
+
+import static android.R.id.list;
+
 /**
  * Created by Víctor on 24/04/2017.
  */
 
-public class BeaconAdapter extends ArrayAdapter<String> {
-    public BeaconAdapter(Context context, String[] list) {
+public class BeaconAdapter extends ArrayAdapter<BleItem> {
+    public BeaconAdapter(Context context, ArrayList<BleItem> list) {
         super(context, 0, list);
+
     }
     TextView uuid,distance;
     public View getView(int position, View convert, ViewGroup parent){
@@ -26,12 +31,14 @@ public class BeaconAdapter extends ArrayAdapter<String> {
             temp= LayoutInflater.from(getContext()).inflate(R.layout.beacon_items,parent, false);
 
         }
-        String a = getItem(position);
+
         //Create object class beacon
+        BleItem temp2 = getItem(position);
+
         uuid= (TextView) temp.findViewById(R.id.uuid);
         distance= (TextView)temp.findViewById(R.id.distance);
-        uuid.setText(a);
-        distance.setText("Hello");
+        uuid.setText(temp2.uuid_no);
+        distance.setText("distance: "+temp2.distance+" meters");
 
         return temp;
     }

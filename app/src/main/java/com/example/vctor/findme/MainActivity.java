@@ -43,7 +43,9 @@ public class MainActivity extends AppCompatActivity implements BeaconConsumer {
     private BluetoothAdapter mBtAdapter;
     private static final int REQUEST_ENABLE_BT = 3;
    //Array of options-->array adapater--> ListView
-
+    private ArrayList<BleItem> device_list= new ArrayList<>();
+    private String uuid;
+    private double dist;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,13 +58,14 @@ public class MainActivity extends AppCompatActivity implements BeaconConsumer {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                populateListView();
+                Snackbar.make(view, "Scanning ...", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
         });
 
         initBluetooth();
-        populateListView();
+
 
         beaconManager = BeaconManager.getInstanceForApplication(this);
 
@@ -76,11 +79,15 @@ public class MainActivity extends AppCompatActivity implements BeaconConsumer {
     }
 
     private void populateListView() {
-       //Create list of items
-        String[]myItems={"Blue","Green","Purple","Red"};
-        String[]myItems2={"58","54","65","34"};
+        BleItem device= new BleItem(uuid,dist);
+        device_list.add(device);
         //Build Adapter
-        BeaconAdapter adapter= new BeaconAdapter(this,myItems);
+        BeaconAdapter adapter= new BeaconAdapter(this,device_list);
+
+        for (BleItem member : device_list){
+            Log.d(TAG, member.toString());
+        }
+
         /*ArrayAdapter<String> adapater = new ArrayAdapter<String>(
                 this,               //Context for the activity
                 R.layout.beacon_items,   //Layout to use (Create)
@@ -158,9 +165,10 @@ public class MainActivity extends AppCompatActivity implements BeaconConsumer {
                     Log.i(TAG, "The RRSI OF THE BEACON IS " + beacons.iterator().next().getRssi() + " RSSI.");
                     Log.i(TAG, "The first beacon I see is having UUID as: " + beacons.iterator().next().getId1()+":"+beacons.iterator().next().getId2()+":"+beacons.iterator().next().getId3() );
                     Log.i(TAG, "UUID IS " + beacons.iterator().next().getServiceUuid() + ".");
-                    String uuid= beacons.iterator().next().getId1()+":"+beacons.iterator().next().getId2()+":"+beacons.iterator().next().getId3();
-                    double dist=beacons.iterator().next().getDistance();
-                    BleItem device= new BleItem(uuid,dist);
+                     uuid= beacons.iterator().next().getId1()+":"+beacons.iterator().next().getId2()+":"+beacons.iterator().next().getId3();
+                     dist=beacons.iterator().next().getDistance();
+                    Log.i(TAG, "MANUFACTURER " + beacons.iterator().next().getManufacturer() + ".");
+
                 }
             }
         });
