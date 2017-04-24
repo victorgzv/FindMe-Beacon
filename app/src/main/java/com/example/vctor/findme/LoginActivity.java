@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,7 +24,7 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
+        final ProgressBar prgBar=(ProgressBar)findViewById(R.id.prgBar);
         final EditText etUserLogin= (EditText) findViewById(R.id.etLoginEmail);
         final EditText etPasswordLogin= (EditText) findViewById(R.id.etLoginPwd);
 
@@ -43,7 +44,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View v) {
                 final String email= etUserLogin.getText().toString();
                 final String password= etPasswordLogin.getText().toString();
-
+                prgBar.setVisibility(View.VISIBLE);
                 Response.Listener<String> responseListener= new Response.Listener<String>(){
 
                     @Override
@@ -53,6 +54,7 @@ public class LoginActivity extends AppCompatActivity {
                             boolean success = jsonResponse.getBoolean("success");
 
                             if(success){
+                                prgBar.setVisibility(View.GONE);
                                 String username= jsonResponse.getString("userName");
                                 String email= jsonResponse.getString("email");
                                 Intent intent= new Intent(LoginActivity.this,MainActivity.class);
@@ -62,7 +64,7 @@ public class LoginActivity extends AppCompatActivity {
                                 LoginActivity.this.startActivity(intent);
 
                             }else{
-
+                                prgBar.setVisibility(View.GONE);
                                 AlertDialog.Builder builder= new AlertDialog.Builder(LoginActivity.this);
                                 builder.setMessage("Login failed")
                                         .setNegativeButton("Retry",null)

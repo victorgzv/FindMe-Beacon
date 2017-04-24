@@ -17,6 +17,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
 import org.altbeacon.beacon.Beacon;
 import org.altbeacon.beacon.BeaconConsumer;
@@ -27,10 +29,12 @@ import org.altbeacon.beacon.RangeNotifier;
 import org.altbeacon.beacon.Region;
 import org.altbeacon.beacon.powersave.BackgroundPowerSaver;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements BeaconConsumer {
-    RecyclerView recyclerView;
+
     //Add a Background Saver so that when the app runs u have don't drain the battery much
     private BackgroundPowerSaver backgroundPowerSaver;
     protected static final String TAG = "MonitoringActivity";
@@ -38,7 +42,9 @@ public class MainActivity extends AppCompatActivity implements BeaconConsumer {
     private BluetoothLeScanner mBtScanner;
     private BluetoothAdapter mBtAdapter;
     private static final int REQUEST_ENABLE_BT = 3;
-    String [] Items ={"Item Beacon 0","Item Beacon 1","Item Beacon 2"};
+   //Array of options-->array adapater--> ListView
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,10 +62,7 @@ public class MainActivity extends AppCompatActivity implements BeaconConsumer {
         });
 
         initBluetooth();
-        //Adding the recyclerView
-        recyclerView= (RecyclerView) findViewById(R.id.recyclerview);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(new Adapter(this,Items));
+        populateListView();
 
         beaconManager = BeaconManager.getInstanceForApplication(this);
 
@@ -70,6 +73,21 @@ public class MainActivity extends AppCompatActivity implements BeaconConsumer {
         backgroundPowerSaver = new BackgroundPowerSaver(this);
 
 
+    }
+
+    private void populateListView() {
+       //Create list of items
+        String[]myItems={"Blue","Green","Purple","Red"};
+        String[]myItems2={"58","54","65","34"};
+        //Build Adapter
+        BeaconAdapter adapter= new BeaconAdapter(this,myItems);
+        /*ArrayAdapter<String> adapater = new ArrayAdapter<String>(
+                this,               //Context for the activity
+                R.layout.beacon_items,   //Layout to use (Create)
+                myItems);           //Items to be displayed*/
+        //Configure the list view
+        ListView list =(ListView)findViewById(R.id.listViewMain);
+        list.setAdapter(adapter);
     }
 
     @Override
@@ -139,7 +157,10 @@ public class MainActivity extends AppCompatActivity implements BeaconConsumer {
                     Log.i(TAG, "The first beacon I see is about " + beacons.iterator().next().getDistance() + " meters away.");
                     Log.i(TAG, "The RRSI OF THE BEACON IS " + beacons.iterator().next().getRssi() + " RSSI.");
                     Log.i(TAG, "The first beacon I see is having UUID as: " + beacons.iterator().next().getId1()+":"+beacons.iterator().next().getId2()+":"+beacons.iterator().next().getId3() );
-
+                    Log.i(TAG, "UUID IS " + beacons.iterator().next().getServiceUuid() + ".");
+                    String uuid= beacons.iterator().next().getId1()+":"+beacons.iterator().next().getId2()+":"+beacons.iterator().next().getId3();
+                    double dist=beacons.iterator().next().getDistance();
+                    BleItem device= new BleItem(uuid,dist);
                 }
             }
         });

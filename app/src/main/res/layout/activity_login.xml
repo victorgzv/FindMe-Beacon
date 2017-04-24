@@ -48,4 +48,14 @@
         android:layout_marginTop="16dp"
         android:text="Register here" />
 
+    <ProgressBar
+        android:id="@+id/prgBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/tRegisterHere"
+        android:layout_below="@+id/tRegisterHere"
+        android:layout_marginTop="103dp"
+        android:visibility="gone"/>
+
 </RelativeLayout>
