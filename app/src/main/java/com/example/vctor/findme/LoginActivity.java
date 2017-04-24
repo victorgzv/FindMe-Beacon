@@ -54,13 +54,15 @@ public class LoginActivity extends AppCompatActivity {
 
                             if(success){
                                 String username= jsonResponse.getString("userName");
-                                Intent intent= new Intent(LoginActivity.this,MainActivity.class);
+                                String email= jsonResponse.getString("email");
+                                Intent intent= new Intent(LoginActivity.this,FindMe.class);
                                 intent.putExtra("userName",username);
+                                intent.putExtra("email",email);
 
                                 LoginActivity.this.startActivity(intent);
-                                Toast.makeText(getApplicationContext(), "User added ", Toast.LENGTH_LONG).show();
+
                             }else{
-                                Toast.makeText(getApplicationContext(), "Register failed", Toast.LENGTH_LONG).show();
+
                                 AlertDialog.Builder builder= new AlertDialog.Builder(LoginActivity.this);
                                 builder.setMessage("Login failed")
                                         .setNegativeButton("Retry",null)
@@ -78,6 +80,8 @@ public class LoginActivity extends AppCompatActivity {
 
 
                 LoginRequest loginRequest = new LoginRequest(email,password,responseListener);
+                RequestQueue queue= Volley.newRequestQueue(LoginActivity.this);
+                queue.add(loginRequest);
 
 
             }
