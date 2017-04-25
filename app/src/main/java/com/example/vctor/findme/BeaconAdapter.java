@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
@@ -20,11 +21,13 @@ import static android.R.id.list;
  */
 
 public class BeaconAdapter extends ArrayAdapter<BleItem> {
+    private int size;
     public BeaconAdapter(Context context, ArrayList<BleItem> list) {
         super(context, 0, list);
 
     }
-    TextView uuid,distance,mac;
+
+    public TextView uuid,distance,mac;
     public View getView(int position, View convert, ViewGroup parent){
         View temp= convert;
         if(temp== null){
@@ -43,5 +46,8 @@ public class BeaconAdapter extends ArrayAdapter<BleItem> {
         mac.setText("Bluetooth Name: "+temp2.mac_address);
 
         return temp;
+
     }
+
+
 }

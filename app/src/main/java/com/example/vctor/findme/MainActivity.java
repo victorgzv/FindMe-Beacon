@@ -17,6 +17,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -48,7 +49,7 @@ public class MainActivity extends AppCompatActivity implements BeaconConsumer, R
     private static final int REQUEST_ENABLE_BT = 3;
     //Array of options-->array adapater--> ListView
     private ArrayList<BleItem> device_list= new ArrayList<>();
-    private String uuid,dist,mac;
+    private String uuid,dist,mac,majorMinor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +57,8 @@ public class MainActivity extends AppCompatActivity implements BeaconConsumer, R
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -69,6 +72,7 @@ public class MainActivity extends AppCompatActivity implements BeaconConsumer, R
 
         initBluetooth();
         initBeaconManager();
+        populateListView();
 
 
     }
@@ -78,8 +82,6 @@ public class MainActivity extends AppCompatActivity implements BeaconConsumer, R
 
 
 
-
-        //konkakt?
         beaconManager.getBeaconParsers().add(new BeaconParser().setBeaconLayout("m:2-3=0215,i:4-19,i:20-21,i:22-23,p:24-24,d:25-25"));
         beaconManager.getBeaconParsers().add(new BeaconParser().setBeaconLayout("m:2-3=0215,i:4-19,i:20-21,i:22-23,p:24-24"));
         beaconManager.getBeaconParsers().add(new BeaconParser().setBeaconLayout("m:0-3=4c000215,i:4-19,i:20-21,i:22-23,p:24-24"));
@@ -125,9 +127,6 @@ public class MainActivity extends AppCompatActivity implements BeaconConsumer, R
         //Build Adapter
         BeaconAdapter adapter= new BeaconAdapter(this,device_list);
 
-        for (BleItem member : device_list){
-            Log.d(TAG, member.toString());
-        }
 
         /*ArrayAdapter<String> adapater = new ArrayAdapter<String>(
                 this,               //Context for the activity
@@ -136,7 +135,17 @@ public class MainActivity extends AppCompatActivity implements BeaconConsumer, R
         //Configure the list view
         ListView list =(ListView)findViewById(R.id.listViewMain);
         list.setAdapter(adapter);
+        list.setOnItemClickListener(listenerForBeacon);
     }
+
+    AdapterView.OnItemClickListener listenerForBeacon = new AdapterView.OnItemClickListener() {
+        public void onItemClick(AdapterView<?> adapterView, View view, int position, long id){
+            Intent openAd = new Intent(MainActivity.this,DisplayDistance.class);
+            //BleItem chosen = adapter.getItem(position);
+            //openAd.putExtra("chosen", Parcels.wrap(chosen));//change this when object is made parcelable. then send whole object advertisment
+            startActivity(openAd);
+        }
+    };
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -214,9 +223,22 @@ public class MainActivity extends AppCompatActivity implements BeaconConsumer, R
                 uuid= beacon.getId1()+":"+beacon.getId2()+":"+beacon.getId3();
                 dist=getRoundedDistanceString(beacon.getDistance());
                 mac= beacon.getBluetoothAddress();
+                majorMinor = beacon.getId2().toString() + "-" + beacon.getId3().toString();
 
-                BleItem device= new BleItem(uuid,dist,mac);
-                device_list.add(device);
+                if(device_list.size()>0){
+                    for (int i=0;i<device_list.size();i++){
+                        if(!device_list.get(i).uuid_no.equals(uuid)){
+                            BleItem device= new BleItem(uuid,dist,mac);
+                            device_list.add(device);
+                        }else{
+
+                        }
+                    }
+                }else{
+                    BleItem device= new BleItem(uuid,dist,mac);
+                    device_list.add(device);
+                }
+
 
             }
             Log.i(TAG, "The first beacon I see is about " + beacons.iterator().next().getDistance() + " meters away.");
