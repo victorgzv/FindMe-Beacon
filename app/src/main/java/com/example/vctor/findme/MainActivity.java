@@ -32,9 +32,12 @@ import org.altbeacon.beacon.powersave.BackgroundPowerSaver;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements BeaconConsumer {
+import static com.example.vctor.findme.BleItem.getRoundedDistanceString;
+
+public class MainActivity extends AppCompatActivity implements BeaconConsumer, RangeNotifier {
 
     //Add a Background Saver so that when the app runs u have don't drain the battery much
     private BackgroundPowerSaver backgroundPowerSaver;
@@ -43,10 +46,9 @@ public class MainActivity extends AppCompatActivity implements BeaconConsumer {
     private BluetoothLeScanner mBtScanner;
     private BluetoothAdapter mBtAdapter;
     private static final int REQUEST_ENABLE_BT = 3;
-   //Array of options-->array adapater--> ListView
+    //Array of options-->array adapater--> ListView
     private ArrayList<BleItem> device_list= new ArrayList<>();
-    private String uuid;
-    private String dist;
+    private String uuid,dist,mac;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,22 +68,60 @@ public class MainActivity extends AppCompatActivity implements BeaconConsumer {
         });
 
         initBluetooth();
-
-
-        beaconManager = BeaconManager.getInstanceForApplication(this);
-
-        //Below is the profile for iBeacon don't touch it ... by default is altBeacon profile
-        beaconManager.getBeaconParsers().add(new BeaconParser().
-                setBeaconLayout("m:0-3=4c000215,i:4-19,i:20-21,i:22-23,p:24-24"));
-        beaconManager.bind(this);
-        backgroundPowerSaver = new BackgroundPowerSaver(this);
+        initBeaconManager();
 
 
     }
+    private void initBeaconManager() {
+        //beaconManager.setBackgroundMode(PreferencesUtil.isBackgroundScan(this));
+        beaconManager = BeaconManager.getInstanceForApplication(this);
+
+
+
+
+        //konkakt?
+        beaconManager.getBeaconParsers().add(new BeaconParser().setBeaconLayout("m:2-3=0215,i:4-19,i:20-21,i:22-23,p:24-24,d:25-25"));
+        beaconManager.getBeaconParsers().add(new BeaconParser().setBeaconLayout("m:2-3=0215,i:4-19,i:20-21,i:22-23,p:24-24"));
+        beaconManager.getBeaconParsers().add(new BeaconParser().setBeaconLayout("m:0-3=4c000215,i:4-19,i:20-21,i:22-23,p:24-24"));
+        beaconManager.bind(this);
+        beaconManager.setBackgroundBetweenScanPeriod(PreferencesUtil.getBackgroundScanInterval(this));
+
+        beaconManager.setBackgroundScanPeriod(10000L);          // default is 10000L
+        beaconManager.setForegroundBetweenScanPeriod(0L);      // default is 0L
+        beaconManager.setForegroundScanPeriod(1100L);          // Default is 1100L
+
+        //mBeaconManager.setMaxTrackingAge(10000);
+        //mBeaconManager.setRegionExitPeriod(12000L);
+
+        /*
+        RangedBeacon.setMaxTrackingAge() only controls the period of time ranged beacons will continue to be
+        returned after the scanning service stops detecting them.
+        It has no affect on when monitored regions trigger exits. It is set to 5 seconds by default.
+
+        Monitored regions are exited whenever a scan period finishes and the BeaconManager.setRegionExitPeriod()
+        has passed since the last detection.
+        By default, this is 10 seconds, but you can customize it.
+
+        Using the defaults, the library will stop sending ranging updates five seconds after a beacon was last seen,
+         and then send a region exit 10 seconds after it was last seen.
+        You are welcome to change these two settings to meet your needs, but the BeaconManager.setRegionExitPeriod()
+        should generally be the same or longer than the RangedBeacon.setMaxTrackingAge().
+         */
+
+        backgroundPowerSaver = new BackgroundPowerSaver(this);
+        beaconManager.addRangeNotifier(this);
+
+        try {
+            if (beaconManager.isAnyConsumerBound()) {
+                beaconManager.updateScanPeriods();
+            }
+        } catch (RemoteException e) {
+            //Log.e(Constants.TAG, "update scan periods error", e);
+        }
+    }
 
     private void populateListView() {
-        BleItem device= new BleItem(uuid,dist);
-        device_list.add(device);
+
         //Build Adapter
         BeaconAdapter adapter= new BeaconAdapter(this,device_list);
 
@@ -156,34 +196,38 @@ public class MainActivity extends AppCompatActivity implements BeaconConsumer {
             }
         });
 
-        //Range Setting Notifier
-        beaconManager.addRangeNotifier(new RangeNotifier() {
-            @Override
-            public void didRangeBeaconsInRegion(Collection<Beacon> beacons, Region region) {
-                if (beacons.size() > 0) {
-                 Log.i(TAG, "The first beacon I see is about " + beacons.iterator().next().getDistance() + " meters away.");
-                    Log.i(TAG, "The RRSI OF THE BEACON IS " + beacons.iterator().next().getRssi() + " RSSI.");
-                    Log.i(TAG, "The first beacon I see is having UUID as: " + beacons.iterator().next().getId1()+":"+beacons.iterator().next().getId2()+":"+beacons.iterator().next().getId3() );
-                    Log.i(TAG, "UUID IS " + beacons.iterator().next().getServiceUuid() + ".");
-                     uuid= beacons.iterator().next().getId1()+":"+beacons.iterator().next().getId2()+":"+beacons.iterator().next().getId3();
-                     dist=getRoundedDistanceString(beacons.iterator().next().getDistance());
-                    Log.i(TAG, "MANUFACTURER " + beacons.iterator().next().getManufacturer() + ".");
-
-                }
-            }
-        });
 
         try {
             beaconManager.startMonitoringBeaconsInRegion(new Region("myMonitoringUniqueId", null, null, null));
             beaconManager.startRangingBeaconsInRegion(new Region("myRangingUniqueId", null, null, null));
         } catch (RemoteException e) {    }
     }
-    public static double getRoundedDistance(double distance) {
-        return Math.ceil(distance * 100.0D) / 100.0D;
-    }
 
-    public static String getRoundedDistanceString(double distance) {
-        return new DecimalFormat("##0.00").format(getRoundedDistance(distance));
-    }
 
+    @Override
+    public void didRangeBeaconsInRegion(Collection<Beacon> beacons, Region region) {
+        if (beacons != null && beacons.size() > 0  && region != null) {
+            Iterator<Beacon> iterator = beacons.iterator();
+
+            while (iterator.hasNext()) {
+                Beacon beacon = iterator.next();
+                uuid= beacon.getId1()+":"+beacon.getId2()+":"+beacon.getId3();
+                dist=getRoundedDistanceString(beacon.getDistance());
+                mac= beacon.getBluetoothAddress();
+
+                BleItem device= new BleItem(uuid,dist,mac);
+                device_list.add(device);
+
+            }
+            Log.i(TAG, "The first beacon I see is about " + beacons.iterator().next().getDistance() + " meters away.");
+            Log.i(TAG, "The RRSI OF THE BEACON IS " + beacons.iterator().next().getRssi() + " RSSI.");
+            Log.i(TAG, "The first beacon I see is having UUID as: " + beacons.iterator().next().getId1()+":"+beacons.iterator().next().getId2()+":"+beacons.iterator().next().getId3() );
+            Log.i(TAG, "UUID IS " + beacons.iterator().next().getServiceUuid() + ".");
+            //uuid= beacons.iterator().next().getId1()+":"+beacons.iterator().next().getId2()+":"+beacons.iterator().next().getId3();
+            //dist=getRoundedDistanceString(beacons.iterator().next().getDistance());
+            //mac= beacons.iterator().next().getBluetoothAddress();
+
+
+        }
+    }
 }

@@ -22,24 +22,26 @@
     </android.support.design.widget.AppBarLayout>
 
 
+    <ListView
+        android:id="@+id/listViewMain"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/appBarLayout"
+        android:layout_alignParentEnd="true"
+        android:layout_above="@+id/fab" />
+
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
         android:layout_gravity="bottom|end"
-        app:srcCompat="@android:drawable/ic_dialog_email"
+        android:layout_marginBottom="26dp"
+        android:layout_marginEnd="18dp"
         android:layout_marginLeft="@dimen/fab_margin"
         android:layout_marginRight="@dimen/fab_margin"
-        android:layout_below="@+id/listViewMain"
-        android:layout_alignParentEnd="true"
-        android:layout_marginEnd="34dp"
-        android:layout_marginTop="36dp" />
-
-    <ListView
-        android:id="@+id/listViewMain"
-        android:layout_width="match_parent"
-        android:layout_height="396dp"
-        android:layout_below="@+id/appBarLayout"
-        android:layout_centerHorizontal="true" />
+        app:backgroundTint="@android:color/holo_blue_light"
+        android:src="@drawable/ic_wifi"/>
 
 </RelativeLayout>

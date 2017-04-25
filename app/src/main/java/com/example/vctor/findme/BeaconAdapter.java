@@ -24,7 +24,7 @@ public class BeaconAdapter extends ArrayAdapter<BleItem> {
         super(context, 0, list);
 
     }
-    TextView uuid,distance;
+    TextView uuid,distance,mac;
     public View getView(int position, View convert, ViewGroup parent){
         View temp= convert;
         if(temp== null){
@@ -37,8 +37,10 @@ public class BeaconAdapter extends ArrayAdapter<BleItem> {
 
         uuid= (TextView) temp.findViewById(R.id.uuid);
         distance= (TextView)temp.findViewById(R.id.distance);
+        mac= (TextView)temp.findViewById(R.id.mac);
         uuid.setText(temp2.uuid_no);
         distance.setText("distance: "+temp2.distance+" meters");
+        mac.setText("Bluetooth Name: "+temp2.mac_address);
 
         return temp;
     }
