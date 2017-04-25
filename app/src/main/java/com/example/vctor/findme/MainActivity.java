@@ -29,6 +29,7 @@ import org.altbeacon.beacon.RangeNotifier;
 import org.altbeacon.beacon.Region;
 import org.altbeacon.beacon.powersave.BackgroundPowerSaver;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -45,7 +46,7 @@ public class MainActivity extends AppCompatActivity implements BeaconConsumer {
    //Array of options-->array adapater--> ListView
     private ArrayList<BleItem> device_list= new ArrayList<>();
     private String uuid;
-    private double dist;
+    private String dist;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -160,13 +161,12 @@ public class MainActivity extends AppCompatActivity implements BeaconConsumer {
             @Override
             public void didRangeBeaconsInRegion(Collection<Beacon> beacons, Region region) {
                 if (beacons.size() > 0) {
-
-                    Log.i(TAG, "The first beacon I see is about " + beacons.iterator().next().getDistance() + " meters away.");
+                 Log.i(TAG, "The first beacon I see is about " + beacons.iterator().next().getDistance() + " meters away.");
                     Log.i(TAG, "The RRSI OF THE BEACON IS " + beacons.iterator().next().getRssi() + " RSSI.");
                     Log.i(TAG, "The first beacon I see is having UUID as: " + beacons.iterator().next().getId1()+":"+beacons.iterator().next().getId2()+":"+beacons.iterator().next().getId3() );
                     Log.i(TAG, "UUID IS " + beacons.iterator().next().getServiceUuid() + ".");
                      uuid= beacons.iterator().next().getId1()+":"+beacons.iterator().next().getId2()+":"+beacons.iterator().next().getId3();
-                     dist=beacons.iterator().next().getDistance();
+                     dist=getRoundedDistanceString(beacons.iterator().next().getDistance());
                     Log.i(TAG, "MANUFACTURER " + beacons.iterator().next().getManufacturer() + ".");
 
                 }
@@ -178,4 +178,12 @@ public class MainActivity extends AppCompatActivity implements BeaconConsumer {
             beaconManager.startRangingBeaconsInRegion(new Region("myRangingUniqueId", null, null, null));
         } catch (RemoteException e) {    }
     }
+    public static double getRoundedDistance(double distance) {
+        return Math.ceil(distance * 100.0D) / 100.0D;
+    }
+
+    public static String getRoundedDistanceString(double distance) {
+        return new DecimalFormat("##0.00").format(getRoundedDistance(distance));
+    }
+
 }

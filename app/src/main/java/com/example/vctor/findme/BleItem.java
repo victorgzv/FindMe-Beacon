@@ -6,8 +6,8 @@ package com.example.vctor.findme;
 
 public class BleItem {
     public String uuid_no;
-    public double distance;
-    public BleItem(String uuid, double dist){
+    public String distance;
+    public BleItem(String uuid, String dist){
         this.distance=dist;
         this.uuid_no=uuid;
 
