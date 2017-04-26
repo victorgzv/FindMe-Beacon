@@ -7,11 +7,13 @@ import java.text.DecimalFormat;
  */
 
 public class BleItem {
-    public String uuid_no,distance,mac_address;
-    public BleItem(String uuid, String dist,String mac_address){
+    public String uuid_no,distance,mac_address,majorMinor,prox;
+    public BleItem(String uuid, String dist, String mac_address, String majorMinor, String proximity){
         this.distance=dist;
         this.uuid_no=uuid;
         this.mac_address=mac_address;
+        this.majorMinor=majorMinor;
+        this.prox=proximity;
 
     }
     public static double getRoundedDistance(double distance) {
@@ -23,4 +25,11 @@ public class BleItem {
     public String updateBeaconDistance( double distance) {
         return getRoundedDistanceString(distance);
     }
+    String getDistanceBeacon(){
+        return distance;
+    }
+    void setDistanceBeacon(double distance){
+       this.distance=getRoundedDistanceString(distance);
+    }
+
 }

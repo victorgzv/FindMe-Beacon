@@ -6,6 +6,7 @@ import android.bluetooth.le.BluetoothLeScanner;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.RemoteException;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -20,6 +21,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import org.altbeacon.beacon.Beacon;
 import org.altbeacon.beacon.BeaconConsumer;
@@ -36,7 +38,11 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import static com.example.vctor.findme.BleItem.getRoundedDistance;
 import static com.example.vctor.findme.BleItem.getRoundedDistanceString;
+
+
+
 
 public class MainActivity extends AppCompatActivity implements BeaconConsumer, RangeNotifier {
 
@@ -49,7 +55,9 @@ public class MainActivity extends AppCompatActivity implements BeaconConsumer, R
     private static final int REQUEST_ENABLE_BT = 3;
     //Array of options-->array adapater--> ListView
     private ArrayList<BleItem> device_list= new ArrayList<>();
-    private String uuid,dist,mac,majorMinor;
+    private String uuid,dist,mac,majorMinor,proximity;
+    BeaconAdapter adapter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,13 +65,14 @@ public class MainActivity extends AppCompatActivity implements BeaconConsumer, R
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
+        initBeaconManager();
 
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 populateListView();
                 Snackbar.make(view, "Scanning ...", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
@@ -71,7 +80,7 @@ public class MainActivity extends AppCompatActivity implements BeaconConsumer, R
         });
 
         initBluetooth();
-        initBeaconManager();
+
         populateListView();
 
 
@@ -125,7 +134,7 @@ public class MainActivity extends AppCompatActivity implements BeaconConsumer, R
     private void populateListView() {
 
         //Build Adapter
-        BeaconAdapter adapter= new BeaconAdapter(this,device_list);
+         adapter= new BeaconAdapter(this,device_list);
 
 
         /*ArrayAdapter<String> adapater = new ArrayAdapter<String>(
@@ -133,17 +142,20 @@ public class MainActivity extends AppCompatActivity implements BeaconConsumer, R
                 R.layout.beacon_items,   //Layout to use (Create)
                 myItems);           //Items to be displayed*/
         //Configure the list view
-        ListView list =(ListView)findViewById(R.id.listViewMain);
-        list.setAdapter(adapter);
-        list.setOnItemClickListener(listenerForBeacon);
+                ListView list =(ListView)findViewById(R.id.listViewMain);
+                list.setAdapter(adapter);
+                list.setOnItemClickListener(listenerForBeacon);
+
+
+
     }
 
     AdapterView.OnItemClickListener listenerForBeacon = new AdapterView.OnItemClickListener() {
         public void onItemClick(AdapterView<?> adapterView, View view, int position, long id){
-            Intent openAd = new Intent(MainActivity.this,DisplayDistance.class);
+            Intent openItem = new Intent(MainActivity.this,DisplayDistance.class);
             //BleItem chosen = adapter.getItem(position);
-            //openAd.putExtra("chosen", Parcels.wrap(chosen));//change this when object is made parcelable. then send whole object advertisment
-            startActivity(openAd);
+            openItem.putExtra("MAC", mac);//change this when object is made parcelable. then send whole object advertisment
+            startActivity(openItem);
         }
     };
 
@@ -215,27 +227,33 @@ public class MainActivity extends AppCompatActivity implements BeaconConsumer, R
 
     @Override
     public void didRangeBeaconsInRegion(Collection<Beacon> beacons, Region region) {
+
         if (beacons != null && beacons.size() > 0  && region != null) {
             Iterator<Beacon> iterator = beacons.iterator();
-
+            Log.i(TAG,beacons.size()+ "device/s found");
+           // Toast.makeText(this, beacons.size()+ "device/s found", Toast.LENGTH_LONG).show();
             while (iterator.hasNext()) {
                 Beacon beacon = iterator.next();
                 uuid= beacon.getId1()+":"+beacon.getId2()+":"+beacon.getId3();
                 dist=getRoundedDistanceString(beacon.getDistance());
+                proximity=getDistanceQualifier(beacon.getDistance());
                 mac= beacon.getBluetoothAddress();
                 majorMinor = beacon.getId2().toString() + "-" + beacon.getId3().toString();
-
+                BleItem device = null;
                 if(device_list.size()>0){
                     for (int i=0;i<device_list.size();i++){
-                        if(!device_list.get(i).uuid_no.equals(uuid)){
-                            BleItem device= new BleItem(uuid,dist,mac);
+                        if(!device_list.get(i).majorMinor.equals(majorMinor)){
+                             device= new BleItem(uuid,dist,mac,majorMinor,proximity);
+                            device.setDistanceBeacon(beacon.getDistance());
                             device_list.add(device);
+                            
                         }else{
+
 
                         }
                     }
                 }else{
-                    BleItem device= new BleItem(uuid,dist,mac);
+                     device= new BleItem(uuid,dist,mac,majorMinor,proximity);
                     device_list.add(device);
                 }
 
@@ -250,6 +268,17 @@ public class MainActivity extends AppCompatActivity implements BeaconConsumer, R
             //mac= beacons.iterator().next().getBluetoothAddress();
 
 
+        }
+    }
+    public String getDistanceQualifier(double distance) {
+        if (distance < 0.5) {
+            return "Immediate";
+        } else if (distance < 10) {
+            return "Near";
+        } else if (distance < 30) {
+            return "Far";
+        } else {
+            return "Very Far";
         }
     }
 }

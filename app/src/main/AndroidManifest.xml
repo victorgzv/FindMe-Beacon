@@ -45,6 +45,7 @@
             android:name=".MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme" />
+        <activity android:name=".DisplayDistance"></activity>
     </application>
 
 </manifest>
