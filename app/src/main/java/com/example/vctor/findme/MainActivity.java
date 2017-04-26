@@ -1,5 +1,6 @@
 package com.example.vctor.findme;
 
+import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothManager;
 import android.bluetooth.le.BluetoothLeScanner;
@@ -7,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.os.RemoteException;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -21,6 +23,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.altbeacon.beacon.Beacon;
@@ -57,6 +60,8 @@ public class MainActivity extends AppCompatActivity implements BeaconConsumer, R
     private ArrayList<BleItem> device_list= new ArrayList<>();
     private String uuid,dist,mac,majorMinor,proximity;
     BeaconAdapter adapter;
+TextView distview;
+
 
 
     @Override
@@ -88,9 +93,6 @@ public class MainActivity extends AppCompatActivity implements BeaconConsumer, R
     private void initBeaconManager() {
         //beaconManager.setBackgroundMode(PreferencesUtil.isBackgroundScan(this));
         beaconManager = BeaconManager.getInstanceForApplication(this);
-
-
-
         beaconManager.getBeaconParsers().add(new BeaconParser().setBeaconLayout("m:2-3=0215,i:4-19,i:20-21,i:22-23,p:24-24,d:25-25"));
         beaconManager.getBeaconParsers().add(new BeaconParser().setBeaconLayout("m:2-3=0215,i:4-19,i:20-21,i:22-23,p:24-24"));
         beaconManager.getBeaconParsers().add(new BeaconParser().setBeaconLayout("m:0-3=4c000215,i:4-19,i:20-21,i:22-23,p:24-24"));
@@ -266,6 +268,7 @@ public class MainActivity extends AppCompatActivity implements BeaconConsumer, R
             //uuid= beacons.iterator().next().getId1()+":"+beacons.iterator().next().getId2()+":"+beacons.iterator().next().getId3();
             //dist=getRoundedDistanceString(beacons.iterator().next().getDistance());
             //mac= beacons.iterator().next().getBluetoothAddress();
+
 
 
         }
