@@ -48,7 +48,7 @@ public class DisplayDistance extends AppCompatActivity implements BeaconConsumer
             public void run() {
                 try {
                     while (!isInterrupted()) {
-                        Thread.sleep(5000); // in milliseconds
+                        Thread.sleep(3000); // in milliseconds
                         runOnUiThread(new Runnable() { //it has to run on the ui thread  to update the Textview
                             @Override
                             public void run() {

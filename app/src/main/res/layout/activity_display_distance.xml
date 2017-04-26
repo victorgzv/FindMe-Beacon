@@ -11,22 +11,42 @@
         android:id="@+id/txtMac"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="22dp"
-        android:layout_marginTop="77dp"
+        android:text="si"
         android:textAppearance="@style/TextAppearance.AppCompat.Title"
-        android:textColor="@android:color/holo_green_light" />
+        android:textColor="@android:color/holo_green_light"
+        android:layout_alignTop="@+id/textView2"
+        android:layout_toEndOf="@+id/textView2"
+        android:layout_marginStart="12dp" />
 
     <TextView
         android:id="@+id/txtDistance"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/txtMac"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="110dp"
+        android:layout_marginTop="141dp"
         android:text="0.00"
         android:textColor="@android:color/background_light"
         android:textSize="120dp"
-        android:textStyle="bold" />
+        android:layout_below="@+id/txtMac"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/txtDistance"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="27dp"
+        android:text="Meters"
+        android:textSize="50dp"
+        android:textColor="@android:color/background_light" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="MAC Address:"
+        android:textColor="@android:color/background_light"
+        android:layout_alignParentTop="true"
+        android:layout_toStartOf="@+id/textView"
+        android:layout_marginTop="21dp" />
 </RelativeLayout>
