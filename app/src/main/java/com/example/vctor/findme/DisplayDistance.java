@@ -27,6 +27,7 @@ import java.util.Iterator;
 
 public class DisplayDistance extends AppCompatActivity implements BeaconConsumer, RangeNotifier {
     private BluetoothAdapter mBtAdapter;
+    private BackgroundPowerSaver backgroundPowerSaver;
     String beaconMac;
     TextView macAddress,distanceBeacon;
     protected static final String TAX = "MonitoringActivity2";
@@ -95,7 +96,7 @@ public class DisplayDistance extends AppCompatActivity implements BeaconConsumer
         should generally be the same or longer than the RangedBeacon.setMaxTrackingAge().
          */
 
-        //backgroundPowerSaver = new BackgroundPowerSaver(this);
+        backgroundPowerSaver = new BackgroundPowerSaver(this);
         beaconManager.addRangeNotifier(this);
 
         try {

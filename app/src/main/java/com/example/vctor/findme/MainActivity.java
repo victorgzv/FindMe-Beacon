@@ -91,7 +91,7 @@ TextView distview;
 
     }
     private void initBeaconManager() {
-        //beaconManager.setBackgroundMode(PreferencesUtil.isBackgroundScan(this));
+
         beaconManager = BeaconManager.getInstanceForApplication(this);
         beaconManager.getBeaconParsers().add(new BeaconParser().setBeaconLayout("m:2-3=0215,i:4-19,i:20-21,i:22-23,p:24-24,d:25-25"));
         beaconManager.getBeaconParsers().add(new BeaconParser().setBeaconLayout("m:2-3=0215,i:4-19,i:20-21,i:22-23,p:24-24"));
@@ -102,7 +102,7 @@ TextView distview;
         beaconManager.setBackgroundScanPeriod(10000L);          // default is 10000L
         beaconManager.setForegroundBetweenScanPeriod(0L);      // default is 0L
         beaconManager.setForegroundScanPeriod(1100L);          // Default is 1100L
-
+        //beaconManager.setBackgroundMode(PreferencesUtil.isBackgroundScan(this));
         //mBeaconManager.setMaxTrackingAge(10000);
         //mBeaconManager.setRegionExitPeriod(12000L);
 
@@ -236,9 +236,9 @@ TextView distview;
            // Toast.makeText(this, beacons.size()+ "device/s found", Toast.LENGTH_LONG).show();
             while (iterator.hasNext()) {
                 Beacon beacon = iterator.next();
-                uuid= beacon.getId1()+":"+beacon.getId2()+":"+beacon.getId3();
+                uuid="My Beacon ID: "+  beacon.getId1()+":"+beacon.getId2()+":"+beacon.getId3();
                 dist=getRoundedDistanceString(beacon.getDistance());
-                proximity=getDistanceQualifier(beacon.getDistance());
+                proximity="Proximity: "+ getDistanceQualifier(beacon.getDistance());
                 mac= beacon.getBluetoothAddress();
                 majorMinor = beacon.getId2().toString() + "-" + beacon.getId3().toString();
                 BleItem device = null;

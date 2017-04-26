@@ -65,7 +65,6 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/etPassword"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="24dp"
-        tools:visibility="gone" />
+        android:layout_marginTop="24dp" />
 
 </RelativeLayout>

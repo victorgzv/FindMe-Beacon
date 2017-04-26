@@ -41,9 +41,18 @@
         android:layout_marginEnd="18dp"
         android:layout_marginLeft="@dimen/fab_margin"
         android:layout_marginRight="@dimen/fab_margin"
-        app:backgroundTint="@android:color/holo_blue_light"
+        app:backgroundTint="@android:color/holo_green_dark"
         android:src="@drawable/ic_wifi"/>
 
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/fab"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="26dp"
+        android:text="Press item to see distance"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
 
 </RelativeLayout>
