@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
@@ -23,7 +24,7 @@ public class RegisterActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
-
+        final ProgressBar prgBarR=(ProgressBar)findViewById(R.id.prgRegister);
         final EditText etUserName= (EditText) findViewById(R.id.etUserName);
         final EditText etName= (EditText) findViewById(R.id.etName);
         final EditText etEmail= (EditText) findViewById(R.id.etEmail);
@@ -39,7 +40,7 @@ public class RegisterActivity extends AppCompatActivity {
                 final String name= etName.getText().toString();
                 final String email= etEmail.getText().toString();
                 final String password= etPwd.getText().toString();
-
+                prgBarR.setVisibility(View.VISIBLE);
                 Response.Listener<String> responseListener= new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -48,10 +49,12 @@ public class RegisterActivity extends AppCompatActivity {
                             boolean success = jsonResponse.getBoolean("success");
 
                             if(success){
+                                prgBarR.setVisibility(View.GONE);
                                 Intent intent= new Intent(RegisterActivity.this,LoginActivity.class);
                                 RegisterActivity.this.startActivity(intent);
                                 Toast.makeText(getApplicationContext(), "User added "+ name, Toast.LENGTH_LONG).show();
                             }else{
+                                prgBarR.setVisibility(View.GONE);
                                 Toast.makeText(getApplicationContext(), "Register failed", Toast.LENGTH_LONG).show();
                                 AlertDialog.Builder builder= new AlertDialog.Builder(RegisterActivity.this);
                                 builder.setMessage("Register failed")
