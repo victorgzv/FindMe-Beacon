@@ -30,6 +30,11 @@ public class LoginActivity extends AppCompatActivity {
 
         final Button btnLogin= (Button) findViewById(R.id.btnLogin);
         final TextView registerLink= (TextView) findViewById(R.id.tRegisterHere);
+        if(BackgroundTask.isNetworkAvailable(LoginActivity.this)){
+
+        }else{
+            Toast.makeText(this, "No internet connection", Toast.LENGTH_SHORT).show();
+        }
 
         registerLink.setOnClickListener(new View.OnClickListener(){
             @Override

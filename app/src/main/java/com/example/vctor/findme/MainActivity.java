@@ -1,6 +1,9 @@
 package com.example.vctor.findme;
 
 import android.app.Activity;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothManager;
 import android.bluetooth.le.BluetoothLeScanner;
@@ -13,6 +16,7 @@ import android.os.RemoteException;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -30,10 +34,13 @@ import org.altbeacon.beacon.Beacon;
 import org.altbeacon.beacon.BeaconConsumer;
 import org.altbeacon.beacon.BeaconManager;
 import org.altbeacon.beacon.BeaconParser;
+import org.altbeacon.beacon.Identifier;
 import org.altbeacon.beacon.MonitorNotifier;
 import org.altbeacon.beacon.RangeNotifier;
 import org.altbeacon.beacon.Region;
 import org.altbeacon.beacon.powersave.BackgroundPowerSaver;
+import org.altbeacon.beacon.startup.BootstrapNotifier;
+import org.altbeacon.beacon.startup.RegionBootstrap;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -47,12 +54,13 @@ import static com.example.vctor.findme.BleItem.getRoundedDistanceString;
 
 
 
-public class MainActivity extends AppCompatActivity implements BeaconConsumer, RangeNotifier {
+public class MainActivity extends AppCompatActivity implements BeaconConsumer, RangeNotifier,BootstrapNotifier {
 
     //Add a Background Saver so that when the app runs u have don't drain the battery much
     private BackgroundPowerSaver backgroundPowerSaver;
     protected static final String TAG = "MonitoringActivity";
     private BeaconManager beaconManager;
+    private RegionBootstrap  regionBootstrap;
     private BluetoothLeScanner mBtScanner;
     private BluetoothAdapter mBtAdapter;
     private static final int REQUEST_ENABLE_BT = 3;
@@ -60,7 +68,7 @@ public class MainActivity extends AppCompatActivity implements BeaconConsumer, R
     private ArrayList<BleItem> device_list= new ArrayList<>();
     private String uuid,dist,mac,majorMinor,proximity;
     BeaconAdapter adapter;
-TextView distview;
+
 
 
 
@@ -70,7 +78,7 @@ TextView distview;
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        initBeaconManager();
+
 
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -85,7 +93,7 @@ TextView distview;
         });
 
         initBluetooth();
-
+        initBeaconManager();
         populateListView();
 
 
@@ -96,16 +104,20 @@ TextView distview;
         beaconManager.getBeaconParsers().add(new BeaconParser().setBeaconLayout("m:2-3=0215,i:4-19,i:20-21,i:22-23,p:24-24,d:25-25"));
         beaconManager.getBeaconParsers().add(new BeaconParser().setBeaconLayout("m:2-3=0215,i:4-19,i:20-21,i:22-23,p:24-24"));
         beaconManager.getBeaconParsers().add(new BeaconParser().setBeaconLayout("m:0-3=4c000215,i:4-19,i:20-21,i:22-23,p:24-24"));
-        beaconManager.bind(this);
+        Region region = new Region("backgroundRegion", Identifier.parse("0xf7826da6bc5b71e0893e"), null, null);
+        regionBootstrap = new RegionBootstrap(this,region);
+
+        backgroundPowerSaver = new BackgroundPowerSaver(this);
+
         beaconManager.setBackgroundBetweenScanPeriod(PreferencesUtil.getBackgroundScanInterval(this));
 
-        beaconManager.setBackgroundScanPeriod(10000L);          // default is 10000L
-        beaconManager.setForegroundBetweenScanPeriod(0L);      // default is 0L
-        beaconManager.setForegroundScanPeriod(1100L);          // Default is 1100L
+        //beaconManager.setBackgroundScanPeriod(10000L);          // default is 10000L
+        //beaconManager.setForegroundBetweenScanPeriod(0L);      // default is 0L
+        //beaconManager.setForegroundScanPeriod(1100L);          // Default is 1100L
         //beaconManager.setBackgroundMode(PreferencesUtil.isBackgroundScan(this));
-        //mBeaconManager.setMaxTrackingAge(10000);
-        //mBeaconManager.setRegionExitPeriod(12000L);
-
+        beaconManager.setBackgroundBetweenScanPeriod(30000l);
+        beaconManager.setForegroundBetweenScanPeriod(2000l);
+        beaconManager.bind(this);
         /*
         RangedBeacon.setMaxTrackingAge() only controls the period of time ranged beacons will continue to be
         returned after the scanning service stops detecting them.
@@ -189,6 +201,7 @@ TextView distview;
         }
         mBtScanner = mBtAdapter.getBluetoothLeScanner();
     }
+
     void enableBluetooth(){
         if (!mBtAdapter.isEnabled()) {
             mBtAdapter.enable();
@@ -200,6 +213,7 @@ TextView distview;
 
     @Override
     public void onBeaconServiceConnect() {
+        beaconManager.setRangeNotifier(this);
 
         //SetMonitorNotifier for Monitoring Function
         beaconManager.addMonitorNotifier(new MonitorNotifier() {
@@ -242,6 +256,9 @@ TextView distview;
                 mac= beacon.getBluetoothAddress();
                 majorMinor = beacon.getId2().toString() + "-" + beacon.getId3().toString();
                 BleItem device = null;
+                if(beacon.getDistance()>5.0){
+                    sendNotification("You left something behind!");
+                }
                 if(device_list.size()>0){
                     for (int i=0;i<device_list.size();i++){
                         if(!device_list.get(i).majorMinor.equals(majorMinor)){
@@ -261,6 +278,7 @@ TextView distview;
 
 
             }
+            sendNotification("Beacon with my Instance ID found!");
             Log.i(TAG, "The first beacon I see is about " + beacons.iterator().next().getDistance() + " meters away.");
             Log.i(TAG, "The RRSI OF THE BEACON IS " + beacons.iterator().next().getRssi() + " RSSI.");
             Log.i(TAG, "The first beacon I see is having UUID as: " + beacons.iterator().next().getId1()+":"+beacons.iterator().next().getId2()+":"+beacons.iterator().next().getId3() );
@@ -283,5 +301,49 @@ TextView distview;
         } else {
             return "Very Far";
         }
+    }
+
+    @Override
+    public void didEnterRegion(Region region) {
+        Log.d(TAG, "did enter region.");
+        try {
+            beaconManager.startRangingBeaconsInRegion(region);
+        }
+        catch (RemoteException e) {
+            if (BuildConfig.DEBUG) Log.d(TAG, "Can't start ranging");
+        }
+    }
+
+    @Override
+    public void didExitRegion(Region region) {
+        try {
+            beaconManager.stopRangingBeaconsInRegion(region);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void didDetermineStateForRegion(int i, Region region) {
+
+    }
+    private void sendNotification(String text) {
+        android.support.v4.app.NotificationCompat.Builder builder =
+                new NotificationCompat.Builder(this)
+                        .setContentTitle("FindMe Application")
+                        .setContentText(text);
+                       // .setSmallIcon(R.drawable.oval);
+
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+        stackBuilder.addNextIntent(new Intent(this, MainActivity.class));
+        PendingIntent resultPendingIntent =
+                stackBuilder.getPendingIntent(
+                        0,
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                );
+        builder.setContentIntent(resultPendingIntent);
+        NotificationManager notificationManager =
+                (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.notify(1, builder.build());
     }
 }
