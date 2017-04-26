@@ -16,17 +16,17 @@
         android:textColor="@android:color/holo_green_light"
         android:layout_alignTop="@+id/textView2"
         android:layout_toEndOf="@+id/textView2"
-        android:layout_marginStart="12dp" />
+        android:layout_marginStart="13dp" />
 
     <TextView
         android:id="@+id/txtDistance"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="141dp"
+        android:layout_marginTop="62dp"
         android:text="0.00"
         android:textColor="@android:color/background_light"
         android:textSize="120dp"
-        android:layout_below="@+id/txtMac"
+        android:layout_below="@+id/swN"
         android:layout_centerHorizontal="true" />
 
     <TextView
@@ -50,4 +50,24 @@
         android:layout_toStartOf="@+id/textView"
         android:layout_marginTop="21dp"
         android:layout_marginLeft="12dp"/>
+
+    <Switch
+        android:id="@+id/swN"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:shadowColor="@android:color/holo_green_dark"
+        android:switchTextAppearance="@style/TextAppearance.AppCompat.Notification.Info"
+        android:text="Switch"
+        android:layout_marginTop="66dp"
+        android:layout_below="@+id/txtMac"
+        android:layout_alignEnd="@+id/txtDistance" />
+
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Set Notification at >10 m"
+        android:textColor="@android:color/background_light"
+        android:layout_above="@+id/txtDistance"
+        android:layout_alignStart="@+id/textView2" />
 </RelativeLayout>

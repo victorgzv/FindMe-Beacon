@@ -256,9 +256,7 @@ public class MainActivity extends AppCompatActivity implements BeaconConsumer, R
                 mac= beacon.getBluetoothAddress();
                 majorMinor = beacon.getId2().toString() + "-" + beacon.getId3().toString();
                 BleItem device = null;
-                if(beacon.getDistance()>5.0){
-                    sendNotification("You left something behind!");
-                }
+
                 if(device_list.size()>0){
                     for (int i=0;i<device_list.size();i++){
                         if(!device_list.get(i).majorMinor.equals(majorMinor)){
@@ -278,7 +276,7 @@ public class MainActivity extends AppCompatActivity implements BeaconConsumer, R
 
 
             }
-            sendNotification("Beacon with my Instance ID found!");
+
             Log.i(TAG, "The first beacon I see is about " + beacons.iterator().next().getDistance() + " meters away.");
             Log.i(TAG, "The RRSI OF THE BEACON IS " + beacons.iterator().next().getRssi() + " RSSI.");
             Log.i(TAG, "The first beacon I see is having UUID as: " + beacons.iterator().next().getId1()+":"+beacons.iterator().next().getId2()+":"+beacons.iterator().next().getId3() );
@@ -327,23 +325,5 @@ public class MainActivity extends AppCompatActivity implements BeaconConsumer, R
     public void didDetermineStateForRegion(int i, Region region) {
 
     }
-    private void sendNotification(String text) {
-        android.support.v4.app.NotificationCompat.Builder builder =
-                new NotificationCompat.Builder(this)
-                        .setContentTitle("FindMe Application")
-                        .setContentText(text);
-                       // .setSmallIcon(R.drawable.oval);
 
-        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-        stackBuilder.addNextIntent(new Intent(this, MainActivity.class));
-        PendingIntent resultPendingIntent =
-                stackBuilder.getPendingIntent(
-                        0,
-                        PendingIntent.FLAG_UPDATE_CURRENT
-                );
-        builder.setContentIntent(resultPendingIntent);
-        NotificationManager notificationManager =
-                (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.notify(1, builder.build());
-    }
 }

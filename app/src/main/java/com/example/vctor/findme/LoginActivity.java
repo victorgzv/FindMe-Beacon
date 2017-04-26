@@ -50,6 +50,7 @@ public class LoginActivity extends AppCompatActivity {
                 final String email= etUserLogin.getText().toString();
                 final String password= etPasswordLogin.getText().toString();
                 prgBar.setVisibility(View.VISIBLE);
+                boolean validEmail= validateEmail(email);
                 Response.Listener<String> responseListener= new Response.Listener<String>(){
 
                     @Override
@@ -85,13 +86,31 @@ public class LoginActivity extends AppCompatActivity {
                     }
                 };
 
-
-                LoginRequest loginRequest = new LoginRequest(email,password,responseListener);
-                RequestQueue queue= Volley.newRequestQueue(LoginActivity.this);
-                queue.add(loginRequest);
+                if(validEmail==true) {
+                    LoginRequest loginRequest = new LoginRequest(email, password, responseListener);
+                    RequestQueue queue = Volley.newRequestQueue(LoginActivity.this);
+                    queue.add(loginRequest);
+                }else{
+                    prgBar.setVisibility(View.GONE);
+                }
 
 
             }
         });
+    }
+    public boolean validateEmail(String email){
+        boolean valid=true;
+        String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
+        // onClick of button perform this simplest code.
+        if (email.matches(emailPattern))
+        {
+            return true;
+        }
+        else
+        {
+            Toast.makeText(getApplicationContext(),"Invalid email address", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
     }
 }

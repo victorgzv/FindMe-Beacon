@@ -1,6 +1,11 @@
 package com.example.vctor.findme;
 
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.bluetooth.BluetoothAdapter;
+import android.graphics.Color;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.RemoteException;
@@ -10,6 +15,10 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.CompoundButton;
+import android.widget.RadioGroup;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import org.altbeacon.beacon.Beacon;
@@ -29,11 +38,13 @@ public class DisplayDistance extends AppCompatActivity implements BeaconConsumer
     private BluetoothAdapter mBtAdapter;
     private BackgroundPowerSaver backgroundPowerSaver;
     String beaconMac;
-    TextView macAddress,distanceBeacon;
+    TextView macAddress;
     protected static final String TAX = "MonitoringActivity2";
     BeaconManager beaconManager;
     TextView distview;
+    Switch swNotificate;
     String dist;
+    boolean activated=false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,6 +52,27 @@ public class DisplayDistance extends AppCompatActivity implements BeaconConsumer
         macAddress= (TextView)findViewById(R.id.txtMac);
         beaconMac=getIntent().getStringExtra("MAC");
         macAddress.setText(beaconMac);
+        swNotificate= (Switch) findViewById(R.id.swN);
+        //set the switch to ON
+        swNotificate.setChecked(false);
+        //attach a listener to check for changes in state
+        swNotificate.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView,
+                                         boolean isChecked) {
+
+                if(isChecked){
+                    activated=true;
+                }else{
+                    activated=false;
+                }
+
+            }
+        });
+
+
+
         distview= (TextView)findViewById(R.id.txtDistance);
         initBeaconManager();
         Thread t = new Thread() {
@@ -143,12 +175,37 @@ public class DisplayDistance extends AppCompatActivity implements BeaconConsumer
     @Override
     public void didRangeBeaconsInRegion(Collection<Beacon> beacons, Region region) {
         Iterator<Beacon> iterator = beacons.iterator();
+
         while (iterator.hasNext()) {
             Beacon beacon = iterator.next();
+            if(beaconMac.equals(beacon.getBluetoothAddress())){
+
+
+            if(beacon.getDistance()>10 &&activated==true){
+                getNotification();
+            }
             dist= getRoundedDistanceString(beacon.getDistance());
+            }
 
 
 
         }
+    }
+    public void getNotification(){
+        Uri soundUri = RingtoneManager
+                .getDefaultUri(RingtoneManager.TYPE_RINGTONE);
+        NotificationManager notificationManager=(NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        Notification notif= new Notification.Builder(this)
+                .setSmallIcon(R.drawable.ic_alert)
+                .setContentTitle("FindME")
+                .setContentText("You left something behind!!")
+                .setVibrate(new long[] { 1000, 1000, 1000, 1000, 1000 })
+
+                //LED
+                .setLights(Color.RED, 3000, 3000)
+                .setSound(soundUri)
+                .build();
+        notif.flags |= Notification.FLAG_INSISTENT;
+        notificationManager.notify(0,notif);
     }
 }
