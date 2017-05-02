@@ -1,15 +1,11 @@
 # Assignment 3 -OOP
 
 This is an Android application using Bluetooth low energy (BLE) beacons technology to provide proximity-based experiences for users.
-
-It runs on an Android device only and will not run on a virtual device.
-
 [![Video](http://img.youtube.com/vi/fWrekPh4cwc/0.jpg)](https://www.youtube.com/watch?v=fWrekPh4cwc&feature=youtu.be)
-
 
 Introduction
 ------------
-Due to my interest of the "Internet of things" I decided to create this app usign Bluetooth 4.0 to detect nearby devices called Beacons. So first of all I got one of this beacons on Amazon. use the software that was provided by the beacon manufacturer to do setting it up.
+Due to my interest of the "Internet of things" I decided to create this app usign Bluetooth 4.0 to detect nearby devices called Beacons. So first of all I got one of this beacons on Amazon. I used the software that was provided by the manufacturer to set it up.
 
 So, what is a beacon?
 ------------
@@ -20,18 +16,18 @@ In addition to the potential range of BLE, most protocols also operate with thre
 
 What is FindMe?
 ------------
-As part of my Object Oriented Programming Assignment 3 I wanted to learn how to use Android studio and code a more complex Android app than the basic examples I checked in the past.
+As part of my Object Oriented Programming Assignment 3 I wanted to learn how to use Android studio and code a more complex Android app than the basic examples I learnt in the past.
 
 FindMe reminds you that you left something behind using a beacon that you can hang on you keychain or attach to things you think you might lose. Once you realize you lost something, you can use Bluetooth to help you locate them.
 
 How Does it Work?
 ------------
-FindMe allows you to scan bluetooth devices and display the distance between your smartphone and the beacons. In order to show my understanding of how an Android app works using a Database I created a registration page and a login. Once you have logged in, you can track the beacons devices and find the one you own by its UUID. Each ibeacon has a set of identifying numbers. The UUID is a general device identifier. By clicking on your device you can see how far you are from it. This app calculates proximity based on the power level and signal strentgh of te beacon. If you enable the app to remind you when you are more than 10 meters ways from you device FindMe will send a push notification to your mobile phone letting you know that you left something behind.
+FindMe allows you to scan bluetooth devices and display the distance between your smartphone and the beacons. In order to show my understanding of how an Android app works using a Database I created a registration page and a login. Once you have logged in, you can track the beacons devices and find the one you own by its UUID. Each ibeacon has a set of identifying numbers. The UUID is a general device identifier. By clicking on your device you can see how far you are from it. This app calculates proximity based on the power level and signal strentgh of te beacon. If you enable the app to remind you when you are more than 10 meters away from you device FindMe will send a push notification to your mobile phone letting you know that you left something behind.
 
 The platform & language
 ---------------------------
 
-Programming this application involved mostly Java code and some xml. I also use PHP files to make requests to the database which is  is hosted on a free hosting site called 000webhost.com
+Programming this application involved mostly Java code and some xml. I also use PHP files to make requests to the database which is hosted on a free hosting site called 000webhost.com
 
 Most of the method used in this app are from Android's libraries. To use this method properly you need to understand what they do and where to use them appropriately.
 
