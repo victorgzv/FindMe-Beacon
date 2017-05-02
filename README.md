@@ -1,6 +1,10 @@
 # Assignment 3 -OOP
 
 This is an Android application using Bluetooth low energy (BLE) beacons technology to provide proximity-based experiences for users.
+
+
+
+
 [![Video](http://img.youtube.com/vi/fWrekPh4cwc/0.jpg)](https://www.youtube.com/watch?v=fWrekPh4cwc&feature=youtu.be)
 
 Introduction
