@@ -9,18 +9,18 @@ This is an Android application using Bluetooth low energy (BLE) beacons technolo
 
 Introduction
 ------------
-Due to my interest of the "Internet of things" I decided to create this app usign Bluetooth 4.0 to detect nearby devices called Beacons. So first of all I got one of this beacons on Amazon. I used the software that was provided by the manufacturer to set it up.
+Due to my interest in the "Internet of things" I decided to create this app usign Bluetooth 4.0 to detect nearby devices called Beacons. First of all, I got a Beacon device like [this](https://www.amazon.com/FeasyBeacon-Bluetooth-Proximity-Eddystone-programmable/dp/B077FQ6HLV?ref_=fsclp_pl_dp_7) on Amazon.  I used the software that was provided by the manufacturer to set it up.
 
-So, what is a beacon?
+So, what is a Beacon?
 ------------
 
-A beacon is a small device (approx 3cm x 5cm x 2cm) that constantly sends out radio signals to nearby smartphones and tablets, containing a small amount of data.
+A Beacon is a small device (approx 3cm x 5cm x 2cm) that constantly sends out radio signals to nearby smartphones and tablets, containing a small amount of data.
 Whilst beacons can have up to 70m range with no obstructions, this can drop significantly through walls which are made with metal or brick (though thin/stud walls have a much smaller effect).
 In addition to the potential range of BLE, most protocols also operate with three ranges of distance: far, near and immediate – and a device can do something different at each range.
 
 What is FindMe?
 ------------
-As part of my Object Oriented Programming Assignment 3 I wanted to learn how to use Android studio and code a more complex Android app than the basic examples I learnt in the past.
+As part of my Object Oriented Programming Assignment 3 for college I wanted to learn and demostrate how to code a more complex Android app using a programmable piece of hardware.
 
 FindMe reminds you that you left something behind using a beacon that you can hang on you keychain or attach to things you think you might lose. Once you realize you lost something, you can use Bluetooth to help you locate them.
 
@@ -31,12 +31,9 @@ FindMe allows you to scan bluetooth devices and display the distance between you
 The platform & language
 ---------------------------
 
-Programming this application involved mostly Java code and some xml. I also use PHP files to make requests to the database which is hosted on a free hosting site called 000webhost.com
+Programming this application involved mostly Java code and some xml. Most of the method used in this app are built-in Android's libraries. To use these methods properly you need to understand what they do and where to use them appropriately.
 
-Most of the method used in this app are from Android's libraries. To use this method properly you need to understand what they do and where to use them appropriately.
-
-The application makes use of the Android Beacon Library
-(An Android library providing APIs to interact with Beacons). This Api makes your life easier connecting to Ble devices.
+The application makes use of the Android Beacon Library (An Android library providing APIs to interact with Beacons). This Api makes it easier to communicate with BLE devices.
 
 
 Key Notes
